@@ -1,60 +1,103 @@
-import express, { request } from 'express';
-import pool from '../database.js'
+import express from 'express';
+import pool from '../database.js';
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/',async(req,res) => {
-    try{
-        const student =  await pool.query("SELECT * FROM student")
-        res.json(student.rows);
-    }catch (err){
+// GET: ดึงข้อมูลทั้งหมด
+router.get('/', async (req, res) => {
+    try {
+        const students = await pool.query("SELECT * FROM student");
+        res.json(students.rows);
+    } catch (err) {
         console.error(err.message);
-        res.status(500).send("Server Error");
-
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
-router.post("/", async (req, res) => {
+// GET: ดึงข้อมูลตาม ID
+router.get('/:id', async (req, res) => {
     try {
-      const { studentid,sfname,slname,sgender,sage,sphonenumber,saddress } = req.body;
-      await pool.query("INSERT INTO student (studentid,sfname,slname,sgender,sage,sphonenumber,saddress) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *"
-        ,[studentid,sfname,slname,sgender,sage,sphonenumber,saddress] ) 
-      res.send("Student created successfully")
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
-    }
-  });
+        const { id } = req.params;
+        const student = await pool.query("SELECT * FROM student WHERE studentid = $1", [id]);
 
-  router.delete("/:id", async (req, res) => {
+        if (student.rows.length === 0) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        res.json(student.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
+    }
+});
+
+// POST: เพิ่มข้อมูลใหม่
+router.post('/', async (req, res) => {
     try {
-      const { id } = req.params;
-      const deletestudent = await pool.query(
-        "DELETE FROM student WHERE studentid = $1",
-        [id]
-      );
-      res.json("Student was deleted!");
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).send("Server Error");
-    }
-  });
+        const { studentid, sfname, slname, sgender, sage, sphonenumber, saddress } = req.body;
 
-  router.put("/:id", async (req, res) => {
+        // Validation: ตรวจสอบข้อมูลก่อน
+        if (!studentid || !sfname || !slname || !sgender || !sage || !sphonenumber || !saddress) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        const newStudent = await pool.query(
+            "INSERT INTO student (studentid, sfname, slname, sgender, sage, sphonenumber, saddress) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+            [studentid, sfname, slname, sgender, sage, sphonenumber, saddress]
+        );
+
+        res.status(201).json({ message: "Student created successfully", student: newStudent.rows[0] });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
+    }
+});
+
+// DELETE: ลบข้อมูลตาม ID
+router.delete('/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      const { studentid,sfname,slname,sgender,sage,sphonenumber,saddress  } = req.body;
-      await pool.query(
-        "UPDATE student SET studentid=$1,sfname=$2,slname=$3,sgender=$4,sage=$5,sphonenumber=$6,saddress=$7 WHERE studentid =$8 ",
-        [ studentid,sfname,slname,sgender,sage,sphonenumber,saddress,id ]
-      );
-      res.send("Student was updated!");
+        const { id } = req.params;
+        const deleteStudent = await pool.query(
+            "DELETE FROM student WHERE studentid = $1 RETURNING *",
+            [id]
+        );
+
+        if (deleteStudent.rows.length === 0) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        res.json({ message: "Student deleted successfully", student: deleteStudent.rows[0] });
     } catch (err) {
-      console.error(err.message);
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
     }
-  });
+});
 
+// PUT: อัปเดตข้อมูลตาม ID
+router.put('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { sfname, slname, sgender, sage, sphonenumber, saddress } = req.body;
 
+        // Validation: ตรวจสอบข้อมูลก่อน
+        if (!sfname || !slname || !sgender || !sage || !sphonenumber || !saddress) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
 
+        const updateStudent = await pool.query(
+            "UPDATE student SET sfname = $1, slname = $2, sgender = $3, sage = $4, sphonenumber = $5, saddress = $6 WHERE studentid = $7 RETURNING *",
+            [sfname, slname, sgender, sage, sphonenumber, saddress, id]
+        );
+
+        if (updateStudent.rows.length === 0) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        res.json({ message: "Student updated successfully", student: updateStudent.rows[0] });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
+    }
+});
 
 export default router;

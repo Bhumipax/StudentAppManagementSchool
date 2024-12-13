@@ -116,20 +116,20 @@ CREATE TABLE Parent (
 );
 
 CREATE TABLE Enrollment (
-    SubjectID INT,                     -- รหัสวิชา
-    StudentID VARCHAR(6),               -- รหัสนักเรียน
-    Semester INT CHECK (Semester IN (1, 2)) NOT NULL, -- ภาคเรียนที่ลงเรียน (1: กลางภาค, 2: ปลายภาค)
-    Type INT CHECK (Type IN (1, 2)) NOT NULL,         -- ประเภทรายวิชาที่ลงเรียน (1: รายวิชาพื้นฐาน, 2: รายวิชาเพิ่มเติม)
-    Date DATE NOT NULL,                 -- วันที่ลงเรียน
-    PRIMARY KEY (SubjectID, StudentID), -- รหัสวิชาและรหัสนักเรียนเป็น PK รวมกัน
-    CONSTRAINT fk_subject FOREIGN KEY (SubjectID) REFERENCES Subject(SubjectID), -- เชื่อมโยงกับตาราง Subject
-    CONSTRAINT fk_student FOREIGN KEY (StudentID) REFERENCES Student(StudentID)  -- เชื่อมโยงกับตาราง Student
+    EnrollmentID SERIAL PRIMARY KEY,
+    SubjectID INT NOT NULL,
+    StudentID VARCHAR(6) NOT NULL,
+    Semester INT NOT NULL CHECK (Semester IN (1, 2)),
+    Date DATE NOT NULL,
+    CONSTRAINT fk_subject FOREIGN KEY (SubjectID) REFERENCES Subject(SubjectID),
+    CONSTRAINT fk_student FOREIGN KEY (StudentID) REFERENCES Student(StudentID)
 );
 
+
 CREATE TABLE StudentParent (
-    ParentID BIGINT NOT NULL,  -- รหัสผู้ปกครอง (ID card) ใช้ BIGINT
-    StudentID VARCHAR(6) NOT NULL,  -- รหัสนักเรียน
-    CONSTRAINT pk_studentparent PRIMARY KEY (ParentID, StudentID),  -- คีย์หลัก (ParentID, StudentID)
+    StudentParentID SERIAL PRIMARY KEY,  -- คีย์หลักเป็นอัตโนมัติ (Serial)
+    ParentID BIGINT NOT NULL,            -- รหัสผู้ปกครอง (ID card)
+    StudentID VARCHAR(6) NOT NULL,       -- รหัสนักเรียน
     CONSTRAINT fk_parent FOREIGN KEY (ParentID) REFERENCES Parent(ParentID),  -- Foreign Key จาก Parent
     CONSTRAINT fk_student FOREIGN KEY (StudentID) REFERENCES Student(StudentID)  -- Foreign Key จาก Student
 );
