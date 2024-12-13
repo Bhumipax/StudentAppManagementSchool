@@ -14,8 +14,8 @@ router.get('/',async(req,res) => {
 
 router.post("/", async (req, res) => {
     try {
-      const { number,capacity } = req.body;
-      await pool.query("INSERT INTO classroom (number,capacity) VALUES($1,$2) RETURNING *",[number,capacity] ) 
+      const { number,capacity,buildingid } = req.body;
+      await pool.query("INSERT INTO classroom (number,capacity,buildingid) VALUES($1,$2,$3) RETURNING *",[number,capacity,buildingid] ) 
       res.send("Classroom created successfully")
     } catch (err) {
       console.error(err.message);
@@ -37,9 +37,18 @@ router.post("/", async (req, res) => {
     }
   });
 
+  router.put("/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { number,capacity  } = req.body;
+      await pool.query(
+        "UPDATE classroom SET number=$1,capacity=$2 WHERE classroomid =$3 ",
+        [ number,capacity,id ]
+      );
+      res.send("Classroom was updated!");
+    } catch (err) {
+      console.error(err.message);
+    }
+  });
   
-
-
-
-
 export default router;

@@ -11,10 +11,10 @@ router.get('/',async(req,res) => {
 
 router.post("/", async (req, res) => {
     try {
-      const { subjectid,sname,scredit,sgradelevel,stype } = req.body;
-      await pool.query("INSERT INTO subject (subjectid,sname,scredit,sgradelevel,stype) VALUES($1,$2,$3,$4,$5) RETURNING *"
-        ,[ subjectid,sname,scredit,sgradelevel,stype] ) 
-      res.send("Create succ full")
+      const { sname,scredit,sgradelevel,stype } = req.body;
+      await pool.query("INSERT INTO subject (sname,scredit,sgradelevel,stype) VALUES($1,$2,$3,$4) RETURNING *"
+        ,[ sname,scredit,sgradelevel,stype] ) 
+      res.send("Subject created successfully")
     } catch (err) {
       console.error(err.message);
     }
@@ -33,7 +33,18 @@ router.post("/", async (req, res) => {
     }
   });
 
-
-
-
+  router.put("/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { sname,scredit,sgradelevel,stype  } = req.body;
+      await pool.query(
+        "UPDATE subject SET sname=$1,scredit=$2,sgradelevel=$3,stype=$4 WHERE subjectid =$5 ",
+        [ sname,scredit,sgradelevel,stype,id ]
+      );
+      res.send("Student was updated!");
+    } catch (err) {
+      console.error(err.message);
+    }
+  });
+  
 export default router;

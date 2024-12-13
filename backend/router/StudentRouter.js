@@ -6,7 +6,7 @@ const router = express.Router()
 router.get('/',async(req,res) => {
     try{
         const student =  await pool.query("SELECT * FROM student")
-        res.json(teacher.rows);
+        res.json(student.rows);
     }catch (err){
         console.error(err.message);
         res.status(500).send("Server Error");
@@ -16,9 +16,9 @@ router.get('/',async(req,res) => {
 
 router.post("/", async (req, res) => {
     try {
-      const { studentid,sfname,slname,sgender,sage,sphonenumber,address } = req.body;
-      await pool.query("INSERT INTO student (studentid,sfname,slname,sgender,sage,sphonenumber,address) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *"
-        ,[studentid,sfname,slname,sgender,sage,sphonenumber,address] ) 
+      const { studentid,sfname,slname,sgender,sage,sphonenumber,saddress } = req.body;
+      await pool.query("INSERT INTO student (studentid,sfname,slname,sgender,sage,sphonenumber,saddress) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *"
+        ,[studentid,sfname,slname,sgender,sage,sphonenumber,saddress] ) 
       res.send("Student created successfully")
     } catch (err) {
       console.error(err.message);
@@ -43,10 +43,10 @@ router.post("/", async (req, res) => {
   router.put("/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const { studentid,sfname,slname,sgender,sage,sphonenumber,address  } = req.body;
+      const { studentid,sfname,slname,sgender,sage,sphonenumber,saddress  } = req.body;
       await pool.query(
-        "UPDATE student SET studentid=$1,sfname=$2,slname=$3,sgender=$4,sage=$5,sphonenumber=$6,address=$7",
-        [bname,id]
+        "UPDATE student SET studentid=$1,sfname=$2,slname=$3,sgender=$4,sage=$5,sphonenumber=$6,saddress=$7 WHERE studentid =$8 ",
+        [ studentid,sfname,slname,sgender,sage,sphonenumber,saddress,id ]
       );
       res.send("Student was updated!");
     } catch (err) {

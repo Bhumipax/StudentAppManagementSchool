@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     try {
       const { bname,bfloor } = req.body;
       await pool.query("INSERT INTO building (bname,bfloor) VALUES($1,$2) RETURNING *",[bname,bfloor] ) 
-      res.send("Building created successfully")
+      res.send("building created successfully")
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");

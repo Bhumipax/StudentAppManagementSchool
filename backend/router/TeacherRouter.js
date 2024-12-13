@@ -3,6 +3,17 @@ import pool from '../database.js'
 
 const router = express.Router()
 
+router.get('/',async(req,res) => {
+  try{
+      const teacher =  await pool.query("SELECT * FROM teacher")
+      res.json(teacher.rows);
+  }catch (err){
+      console.error(err.message);
+      res.status(500).send("Server Error");
+
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
       const { teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address } = req.body;
@@ -39,6 +50,20 @@ router.post("/", async (req, res) => {
     } catch (err) {
       console.log(err.message);
       res.status(500).send("Server Error");
+    }
+  });
+
+  router.put("/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { teacherid,tfname,tlname,tgender,tage,tphonenumber,tposition,address  } = req.body;
+      await pool.query(
+        "UPDATE teacher SET teacherid=$1,tfname=$2,tlname=$3,tgender=$4,tage=$5,tphonenumber=$6 ,tposition=$7 ,address=$8 WHERE teacherid =$9 ",
+        [ teacherid,tfname,tlname,tgender,tage,tphonenumber,tposition,address,id ]
+      );
+      res.send("Teacher was updated!");
+    } catch (err) {
+      console.error(err.message);
     }
   });
 
