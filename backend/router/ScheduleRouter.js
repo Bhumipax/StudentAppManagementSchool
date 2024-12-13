@@ -15,10 +15,10 @@ router.get('/', async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { scheduleid, day, starttime, endtime , academeicyear, semester, room} = req.body;
+    const {  day, starttime, endtime , academicyear, semester, room} = req.body;
     await pool.query(
-      "INSERT INTO schedule (scheduleid, day, starttime, endtime , academeicyear, semester, room) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-      [scheduleid, day, starttime, endtime , academeicyear, semester, room]
+      "INSERT INTO schedule ( day, starttime, endtime , academicyear, semester, room) VALUES($1, $2, $3, $4, $5, $6) RETURNING *",
+      [ day, starttime, endtime , academicyear, semester, room]
     );
     res.send("Schedule created successfully");
   } catch (err) {
@@ -38,6 +38,20 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {  day, starttime, endtime , academicyear, semester, room  } = req.body;
+    await pool.query(
+      "UPDATE schedule SET day=$1,starttime=$2,endtime=$3,academicyear=$4,semester=$5,room=$6 WHERE scheduleid =$7 ",
+      [  day, starttime, endtime , academicyear, semester, room,id ]
+    );
+    res.send("Schedule was updated!");
+  } catch (err) {
+    console.error(err.message);
   }
 });
 

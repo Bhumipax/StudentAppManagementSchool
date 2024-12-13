@@ -8,8 +8,9 @@ import ParentRouter from './router/ParentRouter.js'
 import ScoredetailRouter from './router/ScoredetailRouter.js'
 import StudentparentRouter from './router/studentparentRouter.js'
 import Studenttimetable from './router/Studenttimetable.js'
-
-
+import StudentRouter from './router/StudentRouter.js'
+import ScheduleRouter from './router/ScheduleRouter.js'
+import SubjectRouter from './router/SubjectRouter.js'
 
 const app = express();
 app.use(express.json())
@@ -35,7 +36,11 @@ app.use("/studenttimetable",Studenttimetable)
 
 app.use("/educationdata",EducationdataRouter)
 
+app.use("/student",StudentRouter)
 
+app.use("/schedule",ScheduleRouter)
+
+app.use("/subject",SubjectRouter)
 
 app.listen(5000,() => {
     console.log("Server is running on port 5000")
