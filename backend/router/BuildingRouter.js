@@ -3,93 +3,98 @@ import pool from '../database.js';
 
 const router = express.Router();
 
+// GET: ดึงข้อมูลอาคารทั้งหมด
 router.get('/', async (req, res) => {
     try {
-        const enrollment = await pool.query("SELECT * FROM Enrollment");
-        res.json(enrollment.rows);
+        const buildings = await pool.query("SELECT * FROM building");
+        res.json(buildings.rows);
     } catch (err) {
         console.error(err.message);
-        res.status(500).send({ error: "Server Error" });
-    }
-});
-
-router.post('/', async (req, res) => {
-    try {
-        const { subjectid, studentid, semester, date } = req.body;
-
-        if (!subjectid || !studentid || !semester || !date) {
-            return res.status(400).json({ error: "All fields are required" });
-        }
-
-        const newEnrollment = await pool.query(
-            "INSERT INTO Enrollment (SubjectID, StudentID, Semester, Date) VALUES ($1, $2, $3, $4) RETURNING *",
-            [subjectid, studentid, semester, date]
-        );
-        res.status(201).json(newEnrollment.rows[0]);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send({ error: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        const result = await pool.query("SELECT * FROM building WHERE buildingid = $1", [id]);
 
-        const enrollment = await pool.query(
-            "SELECT * FROM Enrollment WHERE EnrollmentID = $1",
-            [id]
-        );
-
-        if (enrollment.rows.length === 0) {
-            return res.status(404).json({ error: "Enrollment not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Building not found" });
         }
 
-        res.json(enrollment.rows[0]);
+        res.json(result.rows[0]);
     } catch (err) {
         console.error(err.message);
-        res.status(500).send({ error: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
-router.put('/:id', async (req, res) => {
+// POST: เพิ่มข้อมูลอาคารใหม่
+router.post("/", async (req, res) => {
     try {
-        const { id } = req.params;
-        const { subjectid, studentid, semester, date } = req.body;
+        const { bname, bfloor } = req.body;
 
-        const updateEnrollment = await pool.query(
-            "UPDATE Enrollment SET SubjectID = $1, StudentID = $2, Semester = $3, Date = $4 WHERE EnrollmentID = $5 RETURNING *",
-            [subjectid, studentid, semester, date, id]
-        );
-
-        if (updateEnrollment.rows.length === 0) {
-            return res.status(404).json({ error: "Enrollment not found" });
+        if (!bname || !bfloor) {
+            return res.status(400).json({ error: "Both bname and bfloor are required" });
         }
 
-        res.json(updateEnrollment.rows[0]);
+        const newBuilding = await pool.query(
+            "INSERT INTO building (bname, bfloor) VALUES ($1, $2) RETURNING *",
+            [bname, bfloor]
+        );
+
+        res.status(201).json({ message: "Building created successfully", building: newBuilding.rows[0] });
     } catch (err) {
         console.error(err.message);
-        res.status(500).send({ error: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
-router.delete('/:id', async (req, res) => {
+// DELETE: ลบข้อมูลอาคารตาม ID
+router.delete("/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
-        const deleteEnrollment = await pool.query(
-            "DELETE FROM Enrollment WHERE EnrollmentID = $1 RETURNING *",
+        const deleteBuilding = await pool.query(
+            "DELETE FROM building WHERE buildingid = $1 RETURNING *",
             [id]
         );
 
-        if (deleteEnrollment.rows.length === 0) {
-            return res.status(404).json({ error: "Enrollment not found" });
+        if (deleteBuilding.rows.length === 0) {
+            return res.status(404).json({ error: "Building not found" });
         }
 
-        res.json({ message: "Enrollment deleted successfully", enrollment: deleteEnrollment.rows[0] });
+        res.json({ message: "Building deleted successfully", building: deleteBuilding.rows[0] });
     } catch (err) {
         console.error(err.message);
-        res.status(500).send({ error: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
+    }
+});
+
+// PUT: อัปเดตข้อมูลอาคารตาม ID
+router.put("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { bname, bfloor } = req.body;
+
+        if (!bname || !bfloor) {
+            return res.status(400).json({ error: "Both bname and bfloor are required" });
+        }
+
+        const updateBuilding = await pool.query(
+            "UPDATE building SET bname = $1, bfloor = $2 WHERE buildingid = $3 RETURNING *",
+            [bname, bfloor, id]
+        );
+
+        if (updateBuilding.rows.length === 0) {
+            return res.status(404).json({ error: "Building not found" });
+        }
+
+        res.json({ message: "Building updated successfully", building: updateBuilding.rows[0] });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 });
 

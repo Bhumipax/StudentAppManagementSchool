@@ -1,29 +1,50 @@
-import express, { request } from 'express';
-import pool from '../database.js'
+import express from 'express';
+import pool from '../database.js';
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/',async(req,res) => {
-  try{
-      const teacher =  await pool.query("SELECT * FROM teacher")
-      res.json(teacher.rows);
-  }catch (err){
-      console.error(err.message);
-      res.status(500).send("Server Error");
-
+// GET: ดึงข้อมูลครูทั้งหมด
+router.get('/', async (req, res) => {
+  try {
+    const teacher = await pool.query("SELECT * FROM teacher");
+    res.json(teacher.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server Error" });
   }
 });
 
-router.post("/", async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-      const { teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address } = req.body;
-      const result = await pool.query(
-          "INSERT INTO teacher (teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-          [teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address]
-      );
+    const { id } = req.params;
+    const result = await pool.query("SELECT * FROM teacher WHERE teacherid = $1", [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Teacher not found" });
+    }
+
+    res.json(result.rows[0]);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ error: "Server error" });
+    console.error(err.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
+// POST: เพิ่มข้อมูลครู
+router.post('/', async (req, res) => {
+  try {
+    const { teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address } = req.body;
+    if (!teacherid || !tfname || !tlname || !tgender || !tage || !tphonenumber || !tposition || !address) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+    const result = await pool.query(
+      "INSERT INTO teacher (teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+      [teacherid, tfname, tlname, tgender, tage, tphonenumber, tposition, address]
+    );
+    res.status(201).json({ message: "Teacher created successfully", data: result.rows[0] });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server Error" });
   }
 });
 
