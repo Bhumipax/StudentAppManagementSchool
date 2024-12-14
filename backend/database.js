@@ -4,8 +4,8 @@ const { Pool } = pkg; // ดึง Pool จาก pkg
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'SchoolDB',
-  password: '15905497',
+  database: 'postgres',
+  password: '1234',
   port: 5432,
 });
 

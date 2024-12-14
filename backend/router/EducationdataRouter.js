@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
     try {
       const { id } = req.params; // รับค่า id จาก URL
       const educationdata = await pool.query(
-        'SELECT * FROM educationdata WHERE educationdataid = $1',
+        'SELECT * FROM educationdata WHERE studentid = $1',
         [id]
       );
   

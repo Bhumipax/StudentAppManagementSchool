@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import BuildingRouter from './router/BuildingRouter.js'
 import ClassroomRouter from './router/ClassroomRouter.js'
 import TeacherRouter from './router/TeacherRouter.js'
@@ -13,6 +14,7 @@ import ScheduleRouter from './router/ScheduleRouter.js'
 import SubjectRouter from './router/SubjectRouter.js'
 
 const app = express();
+app.use(cors())
 app.use(express.json())
 app.get("/",(req,res) => {
     res.send("hello world")

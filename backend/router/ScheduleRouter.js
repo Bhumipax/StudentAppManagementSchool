@@ -14,21 +14,37 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:teacherid', async (req, res) => {
   try {
-    const { id } = req.params;
-    const result = await pool.query("SELECT * FROM schedule WHERE scheduleid = $1", [id]);
+    const { teacherid } = req.params;
+    const result = await pool.query("SELECT * FROM schedule WHERE teacherid = $1", [teacherid]);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Schedule not found" });
+      return res.status(404).json({ error: "No schedule found for this teacher" });
     }
 
-    res.json(result.rows[0]);
+    res.json(result.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Server Error" });
   }
 });
+
+// router.get('/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const result = await pool.query("SELECT * FROM schedule WHERE scheduleid = $1", [id]);
+
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({ error: "Schedule not found" });
+//     }
+
+//     res.json(result.rows[0]);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: "Server Error" });
+//   }
+// });
 
 // POST: เพิ่มตารางสอน
 router.post('/', async (req, res) => {

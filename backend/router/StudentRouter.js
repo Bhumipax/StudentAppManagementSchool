@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
             [studentid, sfname, slname, sgender, sage, sphonenumber, saddress]
         );
 
-        res.status(201).json({ message: "Student created successfully", student: newStudent.rows[0] });
+        res.status(201).json(newStudent.rows);
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: "Server Error" });

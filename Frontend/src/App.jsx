@@ -2,20 +2,27 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Login from './components/Login'
 import Detail from './components/Detial'
-import Schedule from './components/Schedule'
-import Studentstatus from './components/Studentstatus'
 import StudentData from './components/StudentData'
+import TeacherData from './components/TeacherData'
 import AddFromStudent from './components/AddFromStudent'
 import AddFromTeacher from './components/AddFromTeacher'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-    <Detail/>
+    <BrowserRouter>
+        <Routes>
+          <Route path='/addstudent' element={<AddFromStudent/>}/>
+          <Route path='/' index element={<Detail />}/>
+          <Route path='/addteacher' element={<AddFromTeacher/>}/>
+          <Route path='/studentdata' element={<StudentData/>}/>
+          <Route path='/teacherdata' element={<TeacherData/>}/>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
