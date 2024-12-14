@@ -5,7 +5,6 @@ import ClassroomRouter from './router/ClassroomRouter.js'
 import TeacherRouter from './router/TeacherRouter.js'
 import EducationdataRouter from './router/EducationdataRouter.js'
 import EnrollmentRouter from './router/EnrollmentRouter.js'
-import ParentRouter from './router/ParentRouter.js'
 import ScoredetailRouter from './router/ScoredetailRouter.js'
 import StudentparentRouter from './router/studentparentRouter.js'
 import Studenttimetable from './router/Studenttimetable.js'
@@ -27,8 +26,6 @@ app.use("/classroom",ClassroomRouter)
 app.use("/teacher",TeacherRouter)
 
 app.use("/enrollment",EnrollmentRouter)
-
-app.use("/parent",ParentRouter)
 
 app.use("/scoredetail",ScoredetailRouter)
 

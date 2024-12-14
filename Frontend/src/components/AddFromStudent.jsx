@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function AddFromStudent() {
+  
+   const navigate = useNavigate();
+
   const [studentid, setstudentid] = useState("");
   const [sfname, setsfname] = useState("");
   const [slname, setslname] = useState("");
@@ -22,6 +26,7 @@ function AddFromStudent() {
         saddress: saddress,
       });
       alert('Student data added successfully');
+      navigate('/studentdata');
     } catch (error) {
       console.error('Error adding student data:', error);
       alert('Failed to add student data');
@@ -105,13 +110,26 @@ function AddFromStudent() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+          <div className='flex justify-center ...'>
           <button
             type="button"
-            className="w-full bg-pink-400 text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-200"
+            className=" bg-pink-400 ml-2 hover:bg-pink-300 text-white font-bold py-2 px-4 rounded "
             onClick={handleClick}
           >
-            บันทึก
+            Save
           </button>
+
+          <button
+            type="button"
+            className="bg-blue-500 ml-2 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded "
+            onClick={() => navigate('/studentdata' )}
+          >
+            Back
+          </button>
+
+          </div>
+          
+
         </form>
       </div>
     </div>

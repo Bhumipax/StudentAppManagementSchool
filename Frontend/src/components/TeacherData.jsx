@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
-const StudentData = () => {
+const TeacherData = () => {
+  const navigate = useNavigate();  // ใช้ navigate สำหรับการเปลี่ยนเส้นทางหลังการลบ
+  
   const [schedule, setSchedule] = useState([]); // เก็บข้อมูลตารางสอน
   const [teacher, setTeacher] = useState([]); // เก็บข้อมูลครู
   const [inputTeacherId, setInputTeacherId] = useState(""); // สำหรับกรอก Teacher ID
@@ -35,11 +38,7 @@ const StudentData = () => {
     const fetcheducate = async () => {
       try {
         const data = await axios.get(`http://localhost:5000/schedule/${teacherId}`);
-        if (Array.isArray(data.data)) {
-          setSchedule(data.data);
-        } else {
-          setSchedule([data.data]);
-        }
+        setSchedule(Array.isArray(data.data) ? data.data : [data.data]);
         console.log(data.data);
       } catch (error) {
         console.error("Error fetching schedule data", error);
@@ -49,10 +48,25 @@ const StudentData = () => {
     fetcheducate();
   }, [teacherId]);
 
+  // ฟังก์ชันสำหรับลบข้อมูลครู
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/teacher/${teacherId}`);
+      alert('Teacher deleted successfully!');
+      // เปลี่ยนเส้นทางไปยังหน้ารายการครู
+      navigate('/'); // เปลี่ยนเส้นทางไปที่หน้ารายการครู
+    } catch (error) {
+      console.error("Error deleting teacher data", error);
+      alert('ไม่สามารถลบข้อมูลครูได้');
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-pink-400">
       <div className="bg-white p-6 mt-[60px] rounded-lg shadow-md w-[800px] h-auto relative ">
-        <h1 className="absolute top-[-45px] left-1/2 transform -translate-x-1/2 text-3xl font-bold text-center text-white mb-4">ข้อมูลคุณครู</h1>
+        <h1 className="absolute top-[-45px] left-1/2 transform -translate-x-1/2 text-3xl font-bold text-center text-white mb-4">
+          ข้อมูลคุณครู
+        </h1>
 
         <div className="flex justify-center mb-6">
           <input
@@ -102,9 +116,33 @@ const StudentData = () => {
             <p className="text-gray-500">ไม่มีข้อมูลตารางสอน</p>
           )}
         </div>
+
+        <br />
+
+        <div className="flex justify-end ...">
+          <button
+            onClick={() => navigate('/addteacher')}
+            className="bg-green-500 ml-2 hover:bg-green-300 text-white font-bold py-2 px-4 rounded  ">
+            Add
+          </button>
+          
+          <button
+            type="button"
+            className="bg-blue-500 ml-2 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded "
+            onClick={() => navigate('/' )}
+          >
+            Back
+          </button>
+
+          <button
+            onClick={handleDelete}
+            className="bg-red-500 ml-2 hover:bg-red-400 text-white font-bold py-2 px-4 rounded  ">
+            Delete
+          </button>
+          </div>
       </div>
     </div>
   );
 };
 
-export default StudentData;
+export default TeacherData;
