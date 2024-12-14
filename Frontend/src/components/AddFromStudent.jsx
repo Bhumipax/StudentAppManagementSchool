@@ -113,7 +113,7 @@ function AddFromStudent() {
           <div className='flex justify-center ...'>
           <button
             type="button"
-            className=" bg-pink-400 ml-2 hover:bg-pink-300 text-white font-bold py-2 px-4 rounded "
+            className=" bg-pink-400 ml-2 hover:bg-pink-500 text-white font-bold py-2 px-4 rounded "
             onClick={handleClick}
           >
             Save
@@ -121,15 +121,12 @@ function AddFromStudent() {
 
           <button
             type="button"
-            className="bg-blue-500 ml-2 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded "
+            className="bg-sky-600 ml-2 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded "
             onClick={() => navigate('/studentdata' )}
           >
             Back
           </button>
-
           </div>
-          
-
         </form>
       </div>
     </div>

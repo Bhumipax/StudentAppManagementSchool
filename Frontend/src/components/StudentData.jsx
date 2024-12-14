@@ -127,13 +127,13 @@ const StudentData = () => {
         <div className="flex justify-end ...">
           <button
             onClick={() => navigate('/addstudent')}
-            className="bg-teal-600 ml-2 hover:bg-green-300 text-white font-bold py-2 px-4 rounded  ">
+            className="bg-teal-600 ml-2 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded  ">
             Add
           </button>
 
           <button
             type="button"
-            className="bg-sky-600 ml-2 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded "
+            className="bg-sky-600 ml-2 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded "
             onClick={() => navigate('/' )}
           >
             Back
@@ -141,13 +141,9 @@ const StudentData = () => {
 
           <button
             onClick={handleDelete}
-            className="bg-red-500 ml-2 hover:bg-red-400 text-white font-bold py-2 px-4 rounded  ">
+            className="bg-red-500 ml-2 hover:bg-red-600 text-white font-bold py-2 px-4 rounded  ">
             Delete
           </button>
-
-          
-
-
           </div>
       </div>
     </div>

@@ -122,13 +122,13 @@ const TeacherData = () => {
         <div className="flex justify-end ...">
           <button
             onClick={() => navigate('/addteacher')}
-            className="bg-green-500 ml-2 hover:bg-green-300 text-white font-bold py-2 px-4 rounded  ">
+            className="bg-teal-600 ml-2 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded  ">
             Add
           </button>
           
           <button
             type="button"
-            className="bg-blue-500 ml-2 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded "
+            className="bg-sky-600 ml-2 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded "
             onClick={() => navigate('/' )}
           >
             Back
@@ -136,7 +136,7 @@ const TeacherData = () => {
 
           <button
             onClick={handleDelete}
-            className="bg-red-500 ml-2 hover:bg-red-400 text-white font-bold py-2 px-4 rounded  ">
+            className="bg-red-500 ml-2 hover:bg-red-600 text-white font-bold py-2 px-4 rounded  ">
             Delete
           </button>
           </div>
