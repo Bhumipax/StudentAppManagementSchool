@@ -7,13 +7,15 @@ import Detail from './components/Detial'
 import Schedule from './components/Schedule'
 import Studentstatus from './components/Studentstatus'
 import StudentData from './components/StudentData'
+import AddFromStudent from './components/AddFromStudent'
+import AddFromTeacher from './components/AddFromTeacher'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-    <Login/>
+    <Detail/>
     </>
   )
 }
